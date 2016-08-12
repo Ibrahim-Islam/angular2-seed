@@ -11,6 +11,21 @@ var rimraf = require('gulp-rimraf');
 //Typescript Config;
 var tsProject = ts.createProject(tsConfig.compilerOptions);
 
+function getBuilder(configPath) {
+    var builder = new SystemBuilder();
+    return builder.loadConfig(configPath)
+      .then(function () {
+          return builder;
+      });
+}
+
+gulp.task('build:prod', function () {   
+    return getBuilder('./system.config.js')
+      .then(function (builder) {
+          return builder.bundle('app', 'dist/bundledapp.js', { minify: true });
+      });
+});
+
 //copy dependencies to dist folder
 gulp.task('copy:deps', function(){
   return gulp.src([
